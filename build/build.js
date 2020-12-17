@@ -46,25 +46,26 @@ var ColorHelper = (function () {
 var values = [];
 var i = 0;
 var j = 0;
-var numbers = [99, 44, 6, 2, 1, 5, 63, 87, 283, 4, 0];
 var comparisons = 0;
 var sortNumber = 1;
+var sizeMod = 4;
 var setup = function () {
     createCanvas(windowWidth, windowHeight);
-    for (var i_1 = 0; i_1 < width / 8; i_1++) {
+    for (var i_1 = 0; i_1 < width / sizeMod; i_1++) {
         values.push(random(height));
     }
     console.log(values);
 };
 var resetSort = function () {
     values = [];
-    for (var i_2 = 0; i_2 < width / 8; i_2++) {
+    for (var i_2 = 0; i_2 < width / sizeMod; i_2++) {
         values.push(random(height));
     }
     i = 0;
     j = 0;
     loop();
     console.log(sortNumber);
+    comparisons = 0;
 };
 var draw = function () {
     background(0);
@@ -83,19 +84,22 @@ var draw = function () {
     simulateSorting(values);
 };
 var bubbleSort = function (inArray, speed) {
+    var arrayLength = inArray.length;
     for (var k = 0; k < speed; k++) {
-        if (i < values.length) {
-            for (j = 0; j < values.length - i - 1; j++) {
+        if (i < arrayLength) {
+            for (j = 0; j < arrayLength - i - 1; j++) {
                 var temp = inArray[j];
                 if (inArray[j] > inArray[j + 1]) {
                     inArray[j] = inArray[j + 1];
                     inArray[j + 1] = temp;
+                    comparisons++;
                 }
             }
         }
         else {
             noLoop();
             resetSort();
+            i = 0;
             sortNumber = 2;
         }
         i++;
@@ -108,6 +112,7 @@ var insertionSort = function (inArray, speed) {
             var temp = inArray[i];
             for (j = i; j > 0 && inArray[j - 1] > temp; j--) {
                 inArray[j] = inArray[j - 1];
+                comparisons++;
             }
             inArray[j] = temp;
         }
@@ -125,6 +130,7 @@ var selectionSort = function (inArray, speed) {
     for (var k = 0; k < speed; k++) {
         if (i < arrayLength - 1) {
             for (var j_1 = i + 1; j_1 < arrayLength; j_1++) {
+                comparisons++;
                 if (inArray[i] > inArray[j_1]) {
                     var temp = inArray[i];
                     inArray[i] = inArray[j_1];
@@ -145,14 +151,14 @@ var simulateSorting = function (inArray) {
         if (k == i) {
             fill("#ff00aa");
         }
-        else if ((k == j && j != 0)) {
+        else if (k == j && j != 0) {
             fill("#FF001E");
         }
         else {
             stroke("#ff00aa");
             fill("#4a4edd");
         }
-        rect(k * 8, height, 8, -inArray[k]);
+        rect(k * sizeMod, height, sizeMod, -inArray[k]);
     }
     fill("4a4edd");
     textSize(20);
@@ -165,5 +171,6 @@ var simulateSorting = function (inArray) {
     else if (sortNumber === 3) {
         text("Selection Sort", 20, 20);
     }
+    text("Sorted Lines: " + (i - 1) + "\nComparisons: " + comparisons, 20, 40);
 };
 //# sourceMappingURL=../sketch/sketch/build.js.map

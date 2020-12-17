@@ -3,12 +3,13 @@
 let values: number[] = [];
 let i: number = 0;
 let j: number = 0;
-const numbers = [99, 44, 6, 2, 1, 5, 63, 87, 283, 4, 0];
 let comparisons = 0;
-let sortNumber:number = 1; 
+let sortNumber: number = 1;
+let sizeMod = 4;
+
 const setup = () => {
   createCanvas(windowWidth, windowHeight);
-  for (let i = 0; i < width / 8; i++) {
+  for (let i = 0; i < width / sizeMod; i++) {
     values.push(random(height));
   }
   console.log(values);
@@ -16,18 +17,18 @@ const setup = () => {
 
 const resetSort = () => {
   values = [];
-  for (let i = 0; i < width / 8; i++) {
+  for (let i = 0; i < width / sizeMod; i++) {
     values.push(random(height));
   }
   i = 0;
   j = 0;
   loop();
   console.log(sortNumber);
-}
+  comparisons = 0;
+};
 
 const draw = () => {
   background(0);
-  
   if (sortNumber === 1) {
     bubbleSort(values, 1);
   }
@@ -40,33 +41,31 @@ const draw = () => {
   if (sortNumber === 4) {
     bubbleSort(values, 1);
   }
-  
-  
-  //resetSort();
-  //insertionSort(values, 2);
+
   simulateSorting(values);
 };
 
-
 const bubbleSort = (inArray: number[], speed: number) => {
+  const arrayLength = inArray.length;
   for (let k = 0; k < speed; k++) {
-    if (i < values.length) {
-      for (j = 0; j < values.length - i - 1; j++) {
+    if (i < arrayLength) {
+      for (j = 0; j < arrayLength - i - 1; j++) {
         let temp = inArray[j];
         if (inArray[j] > inArray[j + 1]) {
           inArray[j] = inArray[j + 1];
           inArray[j + 1] = temp;
+          comparisons++;
         }
       }
     } else {
       noLoop();
       resetSort();
+      i = 0;
       sortNumber = 2;
     }
     i++;
   }
 };
-
 
 const insertionSort = (inArray: number[], speed: number) => {
   const arrayLength = inArray.length;
@@ -75,6 +74,7 @@ const insertionSort = (inArray: number[], speed: number) => {
       let temp = inArray[i];
       for (j = i; j > 0 && inArray[j - 1] > temp; j--) {
         inArray[j] = inArray[j - 1];
+        comparisons++;
       }
       inArray[j] = temp;
     } else {
@@ -92,6 +92,7 @@ const selectionSort = (inArray: number[], speed: number) => {
   for (let k = 0; k < speed; k++) {
     if (i < arrayLength - 1) {
       for (let j = i + 1; j < arrayLength; j++) {
+        comparisons++;
         if (inArray[i] > inArray[j]) {
           let temp = inArray[i];
           inArray[i] = inArray[j];
@@ -101,7 +102,7 @@ const selectionSort = (inArray: number[], speed: number) => {
     } else {
       noLoop();
       resetSort();
-      sortNumber = 1; 
+      sortNumber = 1;
     }
     i++;
   }
@@ -111,14 +112,14 @@ const simulateSorting = (inArray: number[]) => {
   for (let k = 0; k < inArray.length; k++) {
     if (k == i) {
       fill("#ff00aa");
-    } else if ((k == j && j != 0) {
+    } else if (k == j && j != 0) {
       fill("#FF001E");
     } else {
       stroke("#ff00aa");
       fill("#4a4edd");
     }
 
-    rect(k * 8, height, 8, -inArray[k]);
+    rect(k * sizeMod, height, sizeMod, -inArray[k]);
   }
   fill("4a4edd");
   textSize(20);
@@ -129,6 +130,5 @@ const simulateSorting = (inArray: number[]) => {
   } else if (sortNumber === 3) {
     text("Selection Sort", 20, 20);
   }
-  //text("Sorted: " + (i - 1) +
-  //    "\t|\tComparisons: " + comparisons, 20, 20);
+  text("Sorted Lines: " + (i - 1) + "\nComparisons: " + comparisons, 20, 40);
 };
